@@ -1,0 +1,14 @@
+pipeline {
+    agent {
+        dockerfile{ filename 'Dockerfile'}
+        }
+    stages {
+        stage('test') {
+            steps {
+                    sh 'cd lynis'
+                    sh './lynis --version'
+            }
+        }
+    }
+}
+
