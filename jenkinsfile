@@ -1,13 +1,27 @@
 pipeline {
     agent {
-        dockerfile{ filename 'Dockerfile'}
+        dockerfile { filename 'Dockerfile' 
+            additionalBuildArgs   '--no-cache --progress=plain'
+            args '-u root --privileged' 
+        }
         }
     stages {
-        stage('test') {
+        stage('Run Lynis Scan') {
             steps {
-                    sh 'cd lynis'
-                    sh './lynis --version'
+                    sh '''
+                    cd /lynis
+                    ./lynis audit system
+                    cd ..
+                    pwd
+                    '''
             }
+        }
+        stage("Generate JSON Lynis Audit Report")
+        {
+           sh '''
+           cd /lynis-report-converter
+           ./lynis-report-converter.pl -j -o ./lynis_report.json -i /var/log/lynis-report.dat    
+           '''   
         }
     }
 }
