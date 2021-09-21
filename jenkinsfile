@@ -1,9 +1,13 @@
 pipeline {
     agent {
+<<<<<<< HEAD
         dockerfile { filename 'Dockerfile' 
             additionalBuildArgs   '--no-cache --progress=plain'
             args '-u root --privileged' 
         }
+=======
+        dockerfile { filename 'Dockerfile' }
+>>>>>>> 5a8339451254c0dc1e02fc2c9d0235a37318e472
         }
     stages {
         stage('Run Lynis Scan') {
