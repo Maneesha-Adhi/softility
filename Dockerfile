@@ -60,19 +60,12 @@ Run sysctl -p
 Run apt-get install git -y
 Run git clone -b 3.0.6 https://github.com/CISOfy/lynis.git
 ##Lynis Report Converter
-RUN apt -y install htmldoc libxml-writer-perl libarchive-zip-perl libjson-perl
+RUN apt -y install make htmldoc libxml-writer-perl libarchive-zip-perl libjson-perl
 RUN ["/bin/bash", "-c", "pushd /tmp/"]
 RUN wget http://search.cpan.org/CPAN/authors/id/M/MF/MFRANKL/HTML-HTMLDoc-0.10.tar.gz
 RUN tar xvf HTML-HTMLDoc-0.10.tar.gz
-RUN ["bin/bash", "-c", "pushd HTML-HTMLDoc-0.10"]
-RUN perl Makefile.PL
-RUN make && make install
-RUN ["bin/bash" "-c" "popd"]
+RUN ["/bin/bash", "-c", "pushd HTML-HTMLDoc-0.10"] ; perl Makefile.PL ; make && make install ; popd
 RUN wget http://search.cpan.org/CPAN/authors/id/J/JM/JMCNAMARA/Excel-Writer-XLSX-0.95.tar.gz
 RUN tar xvf Excel-Writer-XLSX-0.95.tar.gz
-RUN ["bin/bash" "-c" "pushd Excel-Writer-XLSX-0.95"]
-RUN perl Makefile.PL
-RUN make && make install
-RUN ["/bin/bash" "-c" "popd"]
-RUN ["/bin/bash" "-c" "popd"]
+RUN ["/bin/bash", "-c", "pushd Excel-Writer-XLSX-0.95"] ; perl Makefile.PL ; make && make install ; popd ; popd
 RUN git clone https://github.com/d4t4king/lynis-report-converter.git
