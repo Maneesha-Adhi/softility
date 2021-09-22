@@ -11,4 +11,5 @@ echo "kernel.modules_disabled = 1" >> /etc/sysctl.conf
 echo "kernel.core_uses_pid = 1" >> /etc/sysctl.conf
 sysctl -p
 apt-get install suricata -y
+sed -i.bak 's/RUN=no/RUN=yes/g' /etc/default/suricata
 service suricata start
