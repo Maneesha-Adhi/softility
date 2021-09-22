@@ -1,0 +1,39 @@
+pipeline {
+    agent {
+        dockerfile { 
+            filename 'ubuntu1804_dockerfile' 
+            additionalBuildArgs   '--no-cache'
+            args '-u root --privileged' 
+        }
+    }
+    stages {
+      stage('Apply Hardening Scripts') {
+            steps {
+                    sh '''
+                    cd /ansible
+                    sh apply_hardening_scripts.sh
+                    '''
+            }
+        }  
+      stage('Run Lynis Scan') {
+            steps {
+                    sh '''
+                    cd /ansible
+                    sh run_scan.sh
+                    '''
+            }
+        }
+        stage("Generate JSON Lynis Audit Report")
+        {
+         steps{
+
+           sh '''
+           cd /lynis-report-converter
+           ./lynis-report-converter.pl -j -o ./lynis_report.json -i /var/log/lynis-report.dat
+           cat lynis_report.json   
+           '''
+         }   
+        }
+    }
+}
+

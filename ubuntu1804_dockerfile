@@ -1,0 +1,23 @@
+FROM ubuntu:18.04
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND teletype
+Run apt-get update -y
+Run apt-get install git -y
+Run apt-get install python3 -y 
+Run apt-get install python3-pip -y
+## Copy scripts
+COPY ansible /ansible
+COPY apply_hardening_scripts.sh /ansible
+COPY run_scan.sh /ansible/
+## Install Lynis
+Run git clone -b 3.0.6 https://github.com/CISOfy/lynis.git
+## Lynis Report Converter
+RUN apt -y install make wget htmldoc libxml-writer-perl libarchive-zip-perl libjson-perl
+RUN ["/bin/bash", "-c", "pushd /tmp/"]
+RUN wget http://search.cpan.org/CPAN/authors/id/M/MF/MFRANKL/HTML-HTMLDoc-0.10.tar.gz
+RUN tar xvf HTML-HTMLDoc-0.10.tar.gz
+RUN ["/bin/bash", "-c", "pushd HTML-HTMLDoc-0.10"] ; perl Makefile.PL ; make && make install ; popd
+RUN wget http://search.cpan.org/CPAN/authors/id/J/JM/JMCNAMARA/Excel-Writer-XLSX-0.95.tar.gz
+RUN tar xvf Excel-Writer-XLSX-0.95.tar.gz
+RUN ["/bin/bash", "-c", "pushd Excel-Writer-XLSX-0.95"] ; perl Makefile.PL ; make && make install ; popd ; popd
+RUN git clone https://github.com/d4t4king/lynis-report-converter.git
