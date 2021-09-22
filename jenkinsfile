@@ -20,7 +20,8 @@ pipeline {
 
            sh '''
            cd /lynis-report-converter
-           ./lynis-report-converter.pl -j -o ./lynis_report.json -i /var/log/lynis-report.dat    
+           ./lynis-report-converter.pl -j -o ./lynis_report.json -i /var/log/lynis-report.dat
+           cat lynis_report.json   
            '''
          }   
         }
