@@ -6,33 +6,27 @@ pipeline {
             args '-u root --privileged' 
         }
     }
-    stages {
-      stage('Apply Hardening Scripts') {
-            steps {
-                    sh '''
-                    cd /ansible
-                    sh apply_hardening_scripts.sh
-                    '''
-            }
-        }  
-      stage('Run Lynis Scan') {
-            steps {
-                    sh '''
-                    cd /ansible
-                    sh run_scan.sh
-                    '''
-            }
-        }
-        stage("Generate JSON Lynis Audit Report")
-        {
-         steps{
+   stages {
+    stage('Build image') {
+      steps {
+         container('docker') {
+            sh '''
+              docker build -t ubuntu1804_hardened:${BUILD_NUMBER} -f ubuntu1804_dockerfile . --no-cache --progress=plain
+              docker run -ti -d --name ubuntu1804_hardened_container_${BUILD_NUMBER} --privileged  ubuntu1804_hardened:${BUILD_NUMBER} /sbin/init 
+            '''
+         }  
+      }
+    }  
+  
+    stage('Run Lynis Scan') {
+      steps {
+         container('docker') {
+            sh '''
+              docker exec -t ubuntu1804_hardened_container_${BUILD_NUMBER} sh /ansible/run_scan.sh
+            '''
+        }    
 
-           sh '''
-           cd /lynis-report-converter
-           ./lynis-report-converter.pl -j -o ./lynis_report.json -i /var/log/lynis-report.dat
-           cat lynis_report.json   
-           '''
-         }   
+            }
         }
     }
 }
