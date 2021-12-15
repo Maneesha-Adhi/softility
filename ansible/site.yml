@@ -1,6 +1,0 @@
-- name: Harden Server
-  hosts: localhost 
-  become: yes
-  ignore_errors: yes
-  roles:
-    - Ubuntu1804-CIS
