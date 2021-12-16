@@ -2,8 +2,6 @@ pipeline {
     agent {
         dockerfile { 
             filename 'ubuntu1804_dockerfile' 
-            additionalBuildArgs   '--no-cache'
-            args '-u root --privileged' 
         }
     }
    stages {
